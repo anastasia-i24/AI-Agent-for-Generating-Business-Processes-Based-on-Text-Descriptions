@@ -2,83 +2,72 @@ import json
 from llm import llm
 
 def gather_data():
-    initiator = ''
     user_data = []
     script_data = []
-    lanes = []
+    lane_data = []
     flows = []
-    variables = []
-    events = [["startEvent", [48, 48], initiator, 1], ["endEvent", [48, 48], '', 2]]
-    data = [user_data, script_data, lanes, events, flows, process_name, variables]
+    variables = {}
+    events = [["startEvent", [48, 48], '' ,1], ["endEvent", [48, 48], '', 2]]
     id = 3
 
-    print(f"использовать LLM для генерации бизнес процесса? да/yes чтобы подтвердить, иначе начнется ручная сборка")
+    data = [user_data, script_data, lane_data, events, flows, variables]
+
+    print(f"использовать LLM для генерации бизнес процесса? да/yes чтобы подтвердить, иначе начинается ручная сборка")
     ans = str(input())
     if ans == "да" or ans == "yes":
         data = llm(data)
     else:
+    # if not user_data:
         print(f"Введите количество usertask")
         usertask = int(input())
 
         print(f"Введите количество scripttask")
         scripttask = int(input())
 
-        process_name = input('Введите название процесса')
-
-        initiator = input('Введите инициализатора бизнес-процесса (если его нет, введите 0)')
-
-
-
-        if initiator != '0':
-            initiator_editor = input('Введите группу роли (если группы нет введите 0): ')
-            lanes.append({'name': lane, 'id': usertask + scripttask + 3 + len(lanes), 'editor': initiator_editor})
 
         for i in range(usertask):
             data[0].append([])
-            print(f"Введите название элемента usertask {i + 1}: ")
-            name = input()
+            print(f"введите название элемента usertask {i + 1}")
+            name = str(input())
             data[0][-1].append(name)
 
             coords = []
-            print(f"Введите X координату элемента {name}: ")
+            print(f"введите X координату элемента {name}")
             coords.append(int(input()))
-            print(f"Введите Y координату элемента {name}: ")
+            print(f"введите Y координату элемента {name}")
             coords.append(int(input()))
             data[0][-1].append(coords)
 
-            print(f"Введите название роли для элемента {name}: ")
-            lane = input()
+            print(f"введите название lane для элемента {name}")
+            lane = str(input())
             data[0][-1].append(lane)
             data[0][-1].append(id)
             id+=1
-            editor = input('Введите группу роли (если группы нет введите 0): ')
-            lanes.append({'name': lane, 'id': usertask + scripttask + 3 + len(lanes), 'editor': editor})
+            lane_data.append([lane, usertask+scripttask+3+len(lane_data)])
+
+    # if not script_data:
 
         for i in range(scripttask):
             data[1].append([])
-            print(f"Введите название элемента scripttask {i + 1}: ")
-            name = input()
+            print(f"введите название элемента scripttask {i + 1}")
+            name = str(input())
             data[1][-1].append(name)
 
             coords = []
-            print(f"Введите X координату элемента {name}: ")
+            print(f"введите X координату элемента {name}")
             coords.append(int(input()))
-            print(f"Введите Y координату элемента {name}: ")
+            print(f"введите Y координату элемента {name}")
             coords.append(int(input()))
             data[1][-1].append(coords)
             data[1][-1].append(id)
             id+=1
 
         #собираем роли
-        print('Роли, добавленные на данный момент: ')
-        for lane in lanes:
-            print(lane['name'])
-        print('Введите недостающие роли (если все роли добавлены, введите 0)')
-        while (name := (input('Введите название роли: '))):
-            if name == '0':
-                break
+        roles = int(input('Введите количество ролей: '))
+        for i in range(roles):
+            name = input('Введите название роли: ')
             editor = input('Введите группу роли (если группы нет введите 0): ')
-            lanes.append({'name': name, 'id': usertask + scripttask + 3 + len(lanes), 'editor': editor})
+            variables[name] = {'format': 'Executor', 'editor': editor}
 
         #собираем переменные
         vars_format = {
@@ -108,12 +97,12 @@ def gather_data():
                   '9. Время',
                   '10. Файл', sep='\n')
             format = int(input())
-            variables.append({'name': name, 'format': vars_format[format]})
+            variables[name] = {'format': vars_format[format]}
 
-        print(f"Описываем flow процессы")
-        print(f"Формат ввода '1 2' задача 1 переходит в задачу 2")
-        print(f"Чтобы завершить запись переходов введите 'done'")
-        print(f"Список возможных точек перехода и их айди")
+        print(f"описываем flow процессы")
+        print(f"формат ввода '1 2' задача 1 переходит в задачу 2")
+        print(f"чтобы завершить запись переходов введите 'done'")
+        print(f"список возможных точек перехода и их айди")
         # add ID to id
         id = "111112"
         # add tr to name
@@ -134,6 +123,6 @@ def gather_data():
             flows.append(["ID" + id,"tr" + name,"ID" + sourceRef, "ID" + targetRef])
             id = str(int(id) + 1)
             name = str(int(name) + 1)
-        
-    with open('data.json', 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+    # with open('data.json', 'w', encoding='utf-8') as f:
+    #     json.dump(data, f, ensure_ascii=False, indent=2)
+    return data

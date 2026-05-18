@@ -1,5 +1,7 @@
 import os
 import json
+import zipfile
+
 from gather_data import gather_data
 from build_empty_xml import empty_builder
 from gpd import gpd_builder
@@ -7,11 +9,12 @@ from process_definition import process_definition_builder
 from generate_par import create_zip_with_par_extension
 from variables import variables
 
+
 def main():
-    #собираем данные (пока вручную)
-    gather_data()
-    with open('data.json', 'r', encoding='utf-8') as f:
-        data = json.load(f)
+    #собираем данные
+    data = gather_data()
+    # with open('data.json', 'r', encoding='utf-8') as f:
+    #     data = json.load(f)
     
     #собираем xml файлы
     empty_builder("comments", "versions")
@@ -37,8 +40,6 @@ def main():
         print(f"\nSuccessfully created: {result}")
         for i in files_to_archive:
             os.remove(i)
-
-        import zipfile
 
         try:
             with zipfile.ZipFile(result, 'r') as zipf:
