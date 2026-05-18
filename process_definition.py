@@ -1,16 +1,13 @@
-import xml.etree.cElementTree as ET
+from lxml import etree as ET
 from beautiful_xml import indent
 
 def generate_bpmn_process(data):
-    user_data = []
-    script_data = []
-    lane_data = []
-    flows = []
     user_data = data[0]
     script_data = data[1]
-    lane_data = data[2]
+    lanes = data[2]
     events = data[3]
     flows = data[4]
+    process_name = data[5]
 
     # Корень
     root = ET.Element('definitions', {
@@ -23,7 +20,7 @@ def generate_bpmn_process(data):
     })
 
     # Process
-    process = ET.SubElement(root, 'process', {'name': 'result', 'isExecutable': 'false'})
+    process = ET.SubElement(root, 'process', {'name': process_name, 'isExecutable': 'false'})
 
     # ExtensionElements процесса
     ext = ET.SubElement(process, 'extensionElements')
@@ -32,16 +29,17 @@ def generate_bpmn_process(data):
     ET.SubElement(ext, 'runa:property', {'name': 'version', 'value': '4.6.0'})
 
     # LaneSet
-    if lane_data:
+    if lanes:
         lane_set = ET.SubElement(process, 'laneSet', {'id': 'laneSet1'})
-        for lane in lane_data:
-            lane_name = str(lane[0])
-            lane_id = "ID" + str(lane[1])
-            lane_elem = ET.SubElement(lane_set, 'lane', {'id': lane_id, 'name': lane_name})
+        for lane in lanes:
+            lane_elem = ET.SubElement(lane_set, 'lane', {'id': f'ID{lane["id"]}', 'name': lane["name"]})
             lane_ext = ET.SubElement(lane_elem, 'extensionElements')
             ET.SubElement(lane_ext, 'runa:property',
-                          {'name': 'class', 'value': 'ru.runa.wfe.extension.assign.DoNothingTaskHandler'})
-            config = ET.SubElement(lane_ext, 'runa:property', {'name': 'config', 'value': ''})
+                          name='class', 
+                          value='ru.runa.wfe.extension.assign.DefaultAssignmentHandler')
+            ET.SubElement(lane_ext, 'runa:property', 
+                name='config', 
+                text=ET.CDATA(lane.get("editor", "")))
     else:
         ET.SubElement(process, 'laneSet')
 
@@ -51,6 +49,9 @@ def generate_bpmn_process(data):
         event_id = "ID" + str(event[3])
         if 'начало' in event_name.lower() or 'start' in event_name.lower():
             ET.SubElement(process, 'startEvent', {'id': event_id, 'name': event_name})
+            if event[2] != '0':
+                evt_ext = ET.SubElement(evt, 'extensionElements')
+                ET.SubElement(evt_ext, 'runa:property', name='lane', value='true')
         else:
             evt = ET.SubElement(process, 'endEvent', {'id': event_id, 'name': event_name})
             evt_ext = ET.SubElement(evt, 'extensionElements')
@@ -73,7 +74,9 @@ def generate_bpmn_process(data):
         script_ext = ET.SubElement(script_elem, 'extensionElements')
         ET.SubElement(script_ext, 'runa:property',
                       {'name': 'class', 'value': 'ru.runa.wfe.service.handler.DoNothingTaskHandler'})
-        config = ET.SubElement(script_ext, 'runa:property', {'name': 'config'})
+        ET.SubElement(script_ext, 'runa:property', 
+                name='config', 
+                text=ET.CDATA(""))
 
     # flows_element = ET.SubElement(process_root, "flows")
     for flow in flows:

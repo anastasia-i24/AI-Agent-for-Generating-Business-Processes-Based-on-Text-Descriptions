@@ -7,56 +7,69 @@ def gather_data():
     print(f"Введите количество scripttask")
     scripttask = int(input())
 
-    events = [["startEvent", [48, 48], '' ,1], ["endEvent", [48, 48], '', 2]]
+    process_name = input('Введите название процесса')
+
+    initiator = input('Введите инициализатора бизнес-процесса (если его нет, введите 0)')
+
+    events = [["startEvent", [48, 48], initiator, 1], ["endEvent", [48, 48], '', 2]]
     user_data = []
     script_data = []
-    lane_data = []
+    lanes = []
     flows = []
-    variables = {}
-    data = [user_data, script_data, lane_data, events, flows, variables]
+    variables = []
+    data = [user_data, script_data, lanes, events, flows, process_name, variables]
     id = 3
+
+    if initiator != '0':
+        initiator_editor = input('Введите группу роли (если группы нет введите 0): ')
+        lanes.append({'name': lane, 'id': usertask + scripttask + 3 + len(lanes), 'editor': initiator_editor})
 
     for i in range(usertask):
         data[0].append([])
-        print(f"введите название элемента usertask {i + 1}")
-        name = str(input())
+        print(f"Введите название элемента usertask {i + 1}: ")
+        name = input()
         data[0][-1].append(name)
 
         coords = []
-        print(f"введите X координату элемента {name}")
+        print(f"Введите X координату элемента {name}: ")
         coords.append(int(input()))
-        print(f"введите Y координату элемента {name}")
+        print(f"Введите Y координату элемента {name}: ")
         coords.append(int(input()))
         data[0][-1].append(coords)
 
-        print(f"введите название lane для элемента {name}")
-        lane = str(input())
+        print(f"Введите название роли для элемента {name}: ")
+        lane = input()
         data[0][-1].append(lane)
         data[0][-1].append(id)
         id+=1
-        lane_data.append([lane, usertask+scripttask+3+len(lane_data)])
+        editor = input('Введите группу роли (если группы нет введите 0): ')
+        lanes.append({'name': lane, 'id': usertask + scripttask + 3 + len(lanes), 'editor': editor})
 
     for i in range(scripttask):
         data[1].append([])
-        print(f"введите название элемента scripttask {i + 1}")
-        name = str(input())
+        print(f"Введите название элемента scripttask {i + 1}: ")
+        name = input()
         data[1][-1].append(name)
 
         coords = []
-        print(f"введите X координату элемента {name}")
+        print(f"Введите X координату элемента {name}: ")
         coords.append(int(input()))
-        print(f"введите Y координату элемента {name}")
+        print(f"Введите Y координату элемента {name}: ")
         coords.append(int(input()))
         data[1][-1].append(coords)
         data[1][-1].append(id)
         id+=1
 
     #собираем роли
-    roles = int(input('Введите количество ролей: '))
-    for i in range(roles):
-        name = input('Введите название роли: ')
+    print('Роли, добавленные на данный момент: ')
+    for lane in lanes:
+        print(lane['name'])
+    print('Введите недостающие роли (если все роли добавлены, введите 0)')
+    while (name := (input('Введите название роли: '))):
+        if name == '0':
+            break
         editor = input('Введите группу роли (если группы нет введите 0): ')
-        variables[name] = {'format': 'Executor', 'editor': editor}
+        lanes.append({'name': name, 'id': usertask + scripttask + 3 + len(lanes), 'editor': editor})
 
     #собираем переменные
     vars_format = {
@@ -86,12 +99,12 @@ def gather_data():
               '9. Время',
               '10. Файл', sep='\n')
         format = int(input())
-        variables[name] = {'format': vars_format[format]}
+        variables.append({'name': name, 'format': vars_format[format]})
 
-    print(f"описываем flow процессы")
-    print(f"формат ввода '1 2' задача 1 переходит в задачу 2")
-    print(f"чтобы завершить запись переходов введите 'done'")
-    print(f"список возможных точек перехода и их айди")
+    print(f"Описываем flow процессы")
+    print(f"Формат ввода '1 2' задача 1 переходит в задачу 2")
+    print(f"Чтобы завершить запись переходов введите 'done'")
+    print(f"Список возможных точек перехода и их айди")
     # add ID to id
     id = "111112"
     # add tr to name
