@@ -7,7 +7,7 @@ def variables(path, variables):
 
         variable.setAttribute('name', name)
         variable.setAttribute('scriptingName', name)
-        variable.setAttribute('format', f'ru.runa.wfe.var.format.{items['format']}Format' )
+        variable.setAttribute('format', f"ru.runa.wfe.var.format.{items['format']}Format")
 
         if items['format'] == 'Executor':
             variable.setAttribute('swimlane', 'true')
