@@ -3,6 +3,8 @@ import xml.etree.cElementTree as ET
 import zipfile
 from pathlib import Path
 
+from variables_builder import variables_builder, gather_variables_data
+
 
 def indent(elem, level=0):
     i = "\n" + level*"  "
@@ -327,10 +329,13 @@ def create_zip_with_par_extension(file_list, output_name):
 def main():
     empty_builder("comments", "versions")
     empty_builder("forms", "forms")
-    empty_builder("variables", "variables")
+
     data = gather_data()
+    variables_data = gather_variables_data()
+
     gpd_builder(data)
     process_definition_builder(data)
+    variables_builder(variables_data)
 
     print(data)
 
