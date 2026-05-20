@@ -12,7 +12,7 @@ def variables(path, data):
         lane.setAttribute('scriptingName', l['name'])
         lane.setAttribute('format', "ru.runa.wfe.var.format.ExecutorFormat")
         lane.setAttribute('swimlane', 'true')
-        if l['editor'] != '0':
+        if l['editor'] != '':
             lane.setAttribute('editor', l['editor'])
         root.appendChild(lane)
 

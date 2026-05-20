@@ -5,18 +5,22 @@ from gpd import gpd
 from process_definition import process_definition_builder
 from generate_par import create_zip_with_par_extension
 from variables import variables
+from generate_ids import generate_ids
 
 def main():
     #собираем данные (пока вручную)
     data = gather_data()
+
+    #получаем id
+    ids = generate_ids(data)
     
     #собираем xml файлы
     empty_builder("comments", "versions")
     empty_builder("forms", "forms")
     empty_builder("variables", "variables")
     empty_builder("gpd", "process-diagram")
-    process_definition_builder(data)
-    gpd("gpd.xml", data)
+    process_definition_builder(data, ids)
+    gpd("gpd.xml", data, ids)
     variables('variables.xml', data)
 
     files_to_archive = [

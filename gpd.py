@@ -1,9 +1,9 @@
 import xml.dom.minidom as md
 
-def gpd(path, data):
+def gpd(path, data, ids):
     file = md.parse(path)
     process_name = data['process_name']
-    nodes = build_nodes(data)
+    nodes = build_nodes(data, ids)
 
     process_diagram = file.getElementsByTagName('process-diagram')[0]
     process_diagram.setAttribute('name', process_name)
@@ -56,7 +56,7 @@ def gpd(path, data):
         file.writexml(f, indent='', addindent='  ', newl='\n', encoding='utf-8')
 
 
-def build_nodes(data):
+def build_nodes(data, ids):
     nodes = []
     little_nodes = data['events'] + data['gateways'] # 48 x 48
     big_nodes = data['user_tasks'] + data['script_tasks'] # 180 x 120
@@ -64,7 +64,7 @@ def build_nodes(data):
     #изменим flows, чтобы можно было искать их названия по ключам sourceRef
     flows = {}
     for flow in data['flows']:
-        flows[flow['sourceRef']] = flows.get(flow['sourceRef'], []) + [{
+        flows[ids[flow['sourceRef']]] = flows.get(ids[flow['sourceRef']], []) + [{
             'name': flow['name'],
             'bendpoints': flow.get('bendpoints'),
             'label': flow.get('label') 
@@ -74,23 +74,23 @@ def build_nodes(data):
         #text_deco - надпись для события, если событие стартовое, подписываем сверху, иначе - снизу 
         text_deco_placement = 1 if lil['id'] == 1 else -1
         nodes.append({
-            'name': f"ID{lil['id']}",
+            'name': f"ID{ids[lil['name']]}",
             'x': str(lil['x']),
             'y': str(lil['y']),
             'width': '48',
             'height': '48',
-            'transitions': flows.get(lil['id'], []),
+            'transitions': flows.get(ids[lil['name']], []),
             'text_deco': (str(lil['x']), str(lil['y'] + 48 * text_deco_placement)),
         })
 
     for biggy in big_nodes:
         nodes.append({
-            'name': f"ID{biggy['id']}",
+            'name': f"ID{ids[biggy['name']]}",
             'x': str(biggy['x']),
             'y': str(biggy['y']),
             'width': '180',
             'height': '120',
-            'transitions': flows.get(biggy['id'], [])
+            'transitions': flows.get(ids[biggy['name']], [])
         })
 
     return nodes

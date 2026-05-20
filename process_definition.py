@@ -1,7 +1,7 @@
 from lxml import etree as ET
 from beautiful_xml import indent
 
-def generate_bpmn_process(data):
+def generate_bpmn_process(data, ids):
     user_tasks = data['user_tasks']
     script_tasks = data['script_tasks']
     lanes = data['lanes']
@@ -31,7 +31,7 @@ def generate_bpmn_process(data):
             lane_elem = ET.SubElement(
                 lane_set, 
                 'lane', 
-                {'id': f'ID{lane["id"]}', 'name': lane["name"]}
+                {'id': f'ID{ids[lane["name"]]}', 'name': lane["name"]}
             )
             lane_ext = ET.SubElement(lane_elem, 'extensionElements')
             ET.SubElement(lane_ext, f"{{{NS['runa']}}}property",
@@ -47,7 +47,7 @@ def generate_bpmn_process(data):
         gateway = ET.SubElement(
             process, 
             f"{gtw['type']}Gateway", 
-            {'id': f"ID{gtw['id']}", 'name': gtw['name']}
+            {'id': f"ID{ids[gtw['name']]}", 'name': gtw['name']}
         )
         if gtw.get('conditions'):
             gtw_ext = ET.SubElement(gateway, 'extensionElements')
@@ -59,43 +59,51 @@ def generate_bpmn_process(data):
 
     # events
     for event in events:
-        event_name = event['name']
-        event_id = f"ID{event['id']}"
-        if event_id == "ID1":
-            evt = ET.SubElement(process, 'startEvent', {'id': event_id, 'name': event_name})
+        if ids[event['name']] == "ID1":
+            evt = ET.SubElement(
+                process, 
+                'startEvent', 
+                {'id': f"ID{ids[event['name']]}", 'name': event['name']}
+            )
             if event['lane'] != '0':
                 evt_ext = ET.SubElement(evt, 'extensionElements')
                 ET.SubElement(evt_ext, f"{{{NS['runa']}}}property", name='lane', value='true')
         else:
-            evt = ET.SubElement(process, 'endEvent', {'id': event_id, 'name': event_name})
+            evt = ET.SubElement(process, 'endEvent', {'id': f"ID{ids[event['name']]}", 'name': event['name']})
 
     # UserTasks
     for task in user_tasks:
-        task_name = task['name']
-        lane_name = task['lane']
-        task_id = f"ID{task['id']}"
-        task_elem = ET.SubElement(process, 'userTask', {'id': task_id, 'name': task_name})
+        task_elem = ET.SubElement(
+            process, 
+            'userTask', 
+            {'id': f"ID{ids[task['name']]}", 'name': task['name']}
+        )
         task_ext = ET.SubElement(task_elem, 'extensionElements')
-        ET.SubElement(task_ext, f"{{{NS['runa']}}}property", {'name': 'lane', 'value': lane_name})
+        ET.SubElement(task_ext, f"{{{NS['runa']}}}property", {'name': 'lane', 'value': task['lane']})
 
     # ScriptTasks
     for script in script_tasks:
-        script_name = script['name']
-        script_id = f"ID{script['id']}"
-        script_elem = ET.SubElement(process, 'scriptTask', {'id': script_id, 'name': script_name})
+        script_elem = ET.SubElement(
+            process, 
+            'scriptTask', 
+            {'id': f"ID{ids[script['name']]}", 'name': script['name']}
+        )
         script_ext = ET.SubElement(script_elem, 'extensionElements')
-        ET.SubElement(script_ext, f"{{{NS['runa']}}}property",
-                      {'name': 'class', 'value': 'ru.runa.wfe.service.handler.DoNothingTaskHandler'})
+        ET.SubElement(
+            script_ext, 
+            f"{{{NS['runa']}}}property",
+            {'name': 'class', 'value': 'ru.runa.wfe.service.handler.DoNothingTaskHandler'} 
+        )
         config = ET.SubElement(script_ext, f"{{{NS['runa']}}}property", name='config')
         config.text = ET.CDATA("")
 
     # sequenceFlow
     for flow in flows:
         ET.SubElement(process, 'sequenceFlow', {
-            'id': f"ID{flow['id']}",
+            'id': f"ID{ids[flow['name']]}",
             'name': flow['name'],
-            'sourceRef': f"ID{flow['sourceRef']}",
-            'targetRef': f"ID{flow['targetRef']}"
+            'sourceRef': f"ID{ids[flow['sourceRef']]}",
+            'targetRef': f"ID{ids[flow['targetRef']]}"
         })
 
     return root
