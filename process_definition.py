@@ -8,6 +8,7 @@ def generate_bpmn_process(data):
     events = data['events']
     flows = data['flows']
     process_name = data['process_name']
+    gateways = data['gateways']
 
     # Корень
     NS = {'runa': 'http://runa.ru/wfe/xml'}
@@ -27,7 +28,11 @@ def generate_bpmn_process(data):
     if lanes:
         lane_set = ET.SubElement(process, 'laneSet', {'id': 'laneSet1'})
         for lane in lanes:
-            lane_elem = ET.SubElement(lane_set, 'lane', {'id': f'ID{lane["id"]}', 'name': lane["name"]})
+            lane_elem = ET.SubElement(
+                lane_set, 
+                'lane', 
+                {'id': f'ID{lane["id"]}', 'name': lane["name"]}
+            )
             lane_ext = ET.SubElement(lane_elem, 'extensionElements')
             ET.SubElement(lane_ext, f"{{{NS['runa']}}}property",
                           name='class', 
@@ -37,11 +42,26 @@ def generate_bpmn_process(data):
     else:
         ET.SubElement(process, 'laneSet')
 
+    # gateways
+    for gtw in gateways:
+        gateway = ET.SubElement(
+            process, 
+            f"{gtw['type']}Gateway", 
+            {'id': f"ID{gtw['id']}", 'name': gtw['name']}
+        )
+        if gtw.get('conditions'):
+            gtw_ext = ET.SubElement(gateway, 'extensionElements')
+            ET.SubElement(gtw_ext, f"{{{NS['runa']}}}property",
+                          name='class', 
+                          value='ru.runa.wfe.extension.decision.GroovyDecisionHandler')
+            config = ET.SubElement(gtw_ext, f"{{{NS['runa']}}}property", name='config')
+            config.text = ET.CDATA(gtw['conditions'])
+
     # events
     for event in events:
         event_name = event['name']
         event_id = f"ID{event['id']}"
-        if event_id == '1':
+        if event_id == "ID1":
             evt = ET.SubElement(process, 'startEvent', {'id': event_id, 'name': event_name})
             if event['lane'] != '0':
                 evt_ext = ET.SubElement(evt, 'extensionElements')

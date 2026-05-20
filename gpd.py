@@ -26,9 +26,23 @@ def gpd(path, data):
             for trans in n['transitions']:
                 transition = file.createElement('transition')
                 transition.setAttribute('name', trans)
+
+                if trans['bendpoints']:
+                    for b in trans['bendpoints']:
+                        bendpoint = file.createElement('bendpoint')
+                        bendpoint.setAttribute('x', b[0])
+                        bendpoint.setAttribute('y', b[1])
+                        transition.appendChild(bendpoint)
+
+                if trans['label']:
+                    label = file.createElement('label')
+                    label.setAttribute('x', trans['label'][0])
+                    label.setAttribute('y', trans['label'][1])
+                    transition.appendChild(label)
+
                 node.appendChild(transition)
         
-        if n.get('text_deco'):
+        if n['text_deco']:
             text_deco = file.createElement('textDecoration')
             text_deco.setAttribute('x', n['text_deco'][0])
             text_deco.setAttribute('y', n['text_deco'][1])
@@ -44,35 +58,39 @@ def gpd(path, data):
 
 def build_nodes(data):
     nodes = []
-    events = data['events']
-    tasks = data['user_tasks'] + data['script_tasks']
+    little_nodes = data['events'] + data['gateways'] # 48 x 48
+    big_nodes = data['user_tasks'] + data['script_tasks'] # 180 x 120
 
     #изменим flows, чтобы можно было искать их названия по ключам sourceRef
     flows = {}
     for flow in data['flows']:
-        flows[flow['sourceRef']] = flows.get(flow['sourceRef'], []) + [flow['name']]
+        flows[flow['sourceRef']] = flows.get(flow['sourceRef'], []) + [{
+            'name': flow['name'],
+            'bendpoints': flow.get('bendpoints'),
+            'label': flow.get('label') 
+        }]
 
-    for event in events:
+    for lil in little_nodes:
         #text_deco - надпись для события, если событие стартовое, подписываем сверху, иначе - снизу 
-        text_deco_placement = 1 if event['id'] == 1 else -1 
+        text_deco_placement = 1 if lil['id'] == 1 else -1
         nodes.append({
-            'name': f"ID{event['id']}",
-            'x': str(event['x']),
-            'y': str(event['y']),
+            'name': f"ID{lil['id']}",
+            'x': str(lil['x']),
+            'y': str(lil['y']),
             'width': '48',
             'height': '48',
-            'transitions': flows.get(event['id'], []),
-            'text_deco': (str(event['x']), str(event['y'] + 48 * text_deco_placement)) 
+            'transitions': flows.get(lil['id'], []),
+            'text_deco': (str(lil['x']), str(lil['y'] + 48 * text_deco_placement)),
         })
 
-    for task in tasks:
+    for biggy in big_nodes:
         nodes.append({
-            'name': f"ID{task['id']}",
-            'x': str(task['x']),
-            'y': str(task['y']),
+            'name': f"ID{biggy['id']}",
+            'x': str(biggy['x']),
+            'y': str(biggy['y']),
             'width': '180',
             'height': '120',
-            'transitions': flows.get(task['id'], [])
+            'transitions': flows.get(biggy['id'], [])
         })
 
     return nodes

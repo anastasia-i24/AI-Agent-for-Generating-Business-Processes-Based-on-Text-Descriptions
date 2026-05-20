@@ -6,7 +6,8 @@ def gather_data():
         'lanes': [], 
         'events': [], 
         'flows': [],  
-        'variables': []
+        'variables': [],
+        "gateways": []
     }
     id = 1
     existing_lanes = [] # будем проверять, есть ли lane тут, чтобы не добавлять в lanes дважды одно и то же
