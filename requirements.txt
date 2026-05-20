@@ -1,5 +1,6 @@
-langchain
+langchain>=1.0
 openai
+langchain-openai
 python-dotenv
-pydantic
+pydantic>=2
 lxml

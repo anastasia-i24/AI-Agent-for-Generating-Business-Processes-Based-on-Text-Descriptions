@@ -6,10 +6,22 @@ from process_definition import process_definition_builder
 from generate_par import create_zip_with_par_extension
 from variables import variables
 from generate_ids import generate_ids
+from llm import extract_bpmn
 
 def main():
-    #собираем данные (пока вручную)
-    data = gather_data()
+    #собираем данные 
+    os.environ['DEEPSEEK_API_KEY'] = input('Введите свой API ключ: ')
+    print("Введите текст (для завершения введите пустую строку): ")
+    lines = []
+    while (line := input()):
+        line = input()
+        lines.append(line)
+    prompt = "\n".join(lines)
+
+    with open('prompt.txt', 'a', encoding='utf-8') as f:
+        f.write(prompt + '\n')
+
+    data = extract_bpmn()
 
     #получаем id
     ids = generate_ids(data)
@@ -19,6 +31,7 @@ def main():
     empty_builder("forms", "forms")
     empty_builder("variables", "variables")
     empty_builder("gpd", "process-diagram")
+
     process_definition_builder(data, ids)
     gpd("gpd.xml", data, ids)
     variables('variables.xml', data)
