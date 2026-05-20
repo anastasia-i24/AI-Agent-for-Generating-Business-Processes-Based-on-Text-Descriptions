@@ -1,25 +1,23 @@
 import os
-import json
 from gather_data import gather_data
 from build_empty_xml import empty_builder
-from gpd import gpd_builder
+from gpd import gpd
 from process_definition import process_definition_builder
 from generate_par import create_zip_with_par_extension
 from variables import variables
 
 def main():
     #собираем данные (пока вручную)
-    gather_data()
-    with open('data.json', 'r', encoding='utf-8') as f:
-        data = json.load(f)
+    data = gather_data()
     
     #собираем xml файлы
     empty_builder("comments", "versions")
     empty_builder("forms", "forms")
     empty_builder("variables", "variables")
-    gpd_builder(data)
+    empty_builder("gpd", "process-diagram")
     process_definition_builder(data)
-    variables('variables.xml', data[5])
+    gpd("gpd.xml", data)
+    variables('variables.xml', data)
 
     files_to_archive = [
         "gpd.xml",

@@ -1,75 +1,64 @@
-import json
-
 def gather_data():
-    print(f"Введите количество usertask")
-    usertask = int(input())
+    data = {
+        'process_name': '',
+        'user_tasks': [], 
+        'script_tasks': [], 
+        'lanes': [], 
+        'events': [], 
+        'flows': [],  
+        'variables': []
+    }
+    id = 1
+    existing_lanes = [] # будем проверять, есть ли lane тут, чтобы не добавлять в lanes дважды одно и то же
+    data['process_name'] = input('Введите название процесса: ')
 
-    print(f"Введите количество scripttask")
-    scripttask = int(input())
-
-    process_name = input('Введите название процесса')
-
-    initiator = input('Введите инициализатора бизнес-процесса (если его нет, введите 0)')
-
-    events = [["startEvent", [48, 48], initiator, 1], ["endEvent", [48, 48], '', 2]]
-    user_data = []
-    script_data = []
-    lanes = []
-    flows = []
-    variables = []
-    data = [user_data, script_data, lanes, events, flows, process_name, variables]
-    id = 3
-
+    #собираем startEvent
+    start = input("Введите название стартового события: ")
+    x = int(input(f"Введите X координату стартового события: "))
+    y = int(input(f"Введите Y координату стартового события: "))
+    initiator = input('Введите инициализатора бизнес-процесса (если его нет, введите 0): ')
+    data['events'].append({'name': start, 'x': x, 'y': y, 'lane': initiator, 'id': id})
+    id += 1
     if initiator != '0':
+        existing_lanes.append(initiator)
         initiator_editor = input('Введите группу роли (если группы нет введите 0): ')
-        lanes.append({'name': lane, 'id': usertask + scripttask + 3 + len(lanes), 'editor': initiator_editor})
+        data['lanes'].append({'name': initiator, 'id': id, 'editor': initiator_editor})
+        id += 1
 
+    #собираем userTask
+    usertask = int(input("Введите количество usertask: "))
     for i in range(usertask):
-        data[0].append([])
-        print(f"Введите название элемента usertask {i + 1}: ")
-        name = input()
-        data[0][-1].append(name)
+        name = input(f"Введите название элемента usertask {i + 1}: ")
+        x = int(input(f"Введите X координату элемента {name}: "))
+        y = int(input(f"Введите Y координату элемента {name}: "))
+        lane = input(f"Введите название роли для элемента {name}: ")
+        data['user_tasks'].append({'name': name, 'x': x, 'y': y, 'lane': lane, 'id': id})
+        id += 1
+        if lane not in existing_lanes:
+            existing_lanes.append(lane)
+            editor = input('Введите группу роли (если группы нет введите 0): ')
+            data['lanes'].append({'name': lane, 'id': id, 'editor': editor})
+            id += 1
 
-        coords = []
-        print(f"Введите X координату элемента {name}: ")
-        coords.append(int(input()))
-        print(f"Введите Y координату элемента {name}: ")
-        coords.append(int(input()))
-        data[0][-1].append(coords)
-
-        print(f"Введите название роли для элемента {name}: ")
-        lane = input()
-        data[0][-1].append(lane)
-        data[0][-1].append(id)
-        id+=1
-        editor = input('Введите группу роли (если группы нет введите 0): ')
-        lanes.append({'name': lane, 'id': usertask + scripttask + 3 + len(lanes), 'editor': editor})
-
+    #собираем scriptTask
+    scripttask = int(input("Введите количество scripttask: "))
     for i in range(scripttask):
-        data[1].append([])
-        print(f"Введите название элемента scripttask {i + 1}: ")
-        name = input()
-        data[1][-1].append(name)
+        name = input(f"Введите название элемента scripttask {i + 1}: ")
+        x = int(input(f"Введите X координату элемента {name}: "))
+        y = int(input(f"Введите Y координату элемента {name}: "))
+        data['script_tasks'].append({'name': name, 'x': x, 'y': y, 'id': id})
+        id += 1
 
-        coords = []
-        print(f"Введите X координату элемента {name}: ")
-        coords.append(int(input()))
-        print(f"Введите Y координату элемента {name}: ")
-        coords.append(int(input()))
-        data[1][-1].append(coords)
-        data[1][-1].append(id)
-        id+=1
-
-    #собираем роли
+    #собираем оставшиеся роли
     print('Роли, добавленные на данный момент: ')
-    for lane in lanes:
-        print(lane['name'])
+    print(*existing_lanes, sep='\n')
     print('Введите недостающие роли (если все роли добавлены, введите 0)')
     while (name := (input('Введите название роли: '))):
         if name == '0':
             break
         editor = input('Введите группу роли (если группы нет введите 0): ')
-        lanes.append({'name': name, 'id': usertask + scripttask + 3 + len(lanes), 'editor': editor})
+        data['lanes'].append({'name': name, 'id': id, 'editor': editor})
+        id += 1
 
     #собираем переменные
     vars_format = {
@@ -99,32 +88,38 @@ def gather_data():
               '9. Время',
               '10. Файл', sep='\n')
         format = int(input())
-        variables.append({'name': name, 'format': vars_format[format]})
+        data['variables'].append({'name': name, 'format': vars_format[format]})
 
-    print(f"Описываем flow процессы")
-    print(f"Формат ввода '1 2' задача 1 переходит в задачу 2")
+    #собираем endEvent
+    end = input("Введите название конечного события: ")
+    x = int(input(f"Введите X конечного события: "))
+    y = int(input(f"Введите Y координату конечногособытия: "))
+    data['events'].append({'name': end, 'x': x, 'y': y, 'id': id})
+    id += 1
+
+    #собираем переходы
+    name = 1 #переходы будем называть "Переход{name}"
+    print(f"Описываем переходы между элементами бизнес-процесса")
+    print(f"Ввод '1 2' означает 'элемент с id1 переходит в элемент с id2'")
     print(f"Чтобы завершить запись переходов введите 'done'")
-    print(f"Список возможных точек перехода и их айди")
-    # add ID to id
-    id = "111112"
-    # add tr to name
-    name = "111112"
-    print("StartNode", " " , 1)
-    print("EndNode", " " , 2)
-    for i in data[0]:
-        print(i[0], "  ", i[3])
-    for i in data[1]:
-        print(i[0], "  ", i[2])
-    while True:
-        word = str(input()).split()
-        if len(word) == 1:
-            break
-
-        sourceRef = word[0]
-        targetRef = word[1]
-        flows.append(["ID" + id,"tr" + name,"ID" + sourceRef, "ID" + targetRef])
-        id = str(int(id) + 1)
-        name = str(int(name) + 1)
+    print(f"Список элементов, между которыми возможны переходы:")
+    for event in data['events']:
+        print(event['name'], event['id'])
+    for u_t in data['user_tasks']:
+        print(u_t['name'], u_t['id'])
+    for s_t in data['script_tasks']:
+        print(s_t['name'], s_t['id'])
+    
+    while (word := input().split()) != ['done']:
+        sourceRef = int(word[0])
+        targetRef = int(word[1])
+        data['flows'].append({
+            'id': id, 
+            'name': f"Переход{name}", 
+            'sourceRef': sourceRef, 
+            'targetRef': targetRef
+        })
+        id += 1
+        name += 1
         
-    with open('data.json', 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+    return data

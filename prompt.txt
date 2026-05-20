@@ -6,9 +6,13 @@ PROMPT:
 Твоя задача - извлечь из текстового ввода элементы бизнес процесса
 и построить из них схему бизнес процесса
 
-user_tasks: [name, lane_name]
-script_tasks: [name]
-lanes: [{'name': name, 'editor': editor}]
-variables: [{name: name, format: format}]
-events: [name, lane_initiator]
-flows: [source, target]
+data = {
+        'initiator': initiator,
+        'user_tasks': [{name: name, lane: lane}], 
+        'script_tasks': [{name: name}], 
+        'lanes': [{name: name, editor: editor}], 
+        'events': events, 
+        'flows': [{sourceRef: from, targetRef: to}], 
+        'process_name': process_name, 
+        'variables': [{name: name, format: format}]
+    }
