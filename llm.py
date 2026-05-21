@@ -15,7 +15,7 @@ class BPMN(BaseModel):
         default=None,
         description='Действия, которые выполняются участниками бизнес-процесса.'
     )
-    script_tasks: Optional[List[str]] = Field(
+    script_tasks: Optional[List[Dict[str, str]]] = Field(
         default=None,
         description='Действия, которые выполняются автоматически, без вмешательства участников бизнес-процесса.'
     )
@@ -49,35 +49,45 @@ class Flows(BaseModel):
 class Groovy(BaseModel):
     groovy: Optional[List[Dict[str, str]]] = Field(
         default=None,
-        description='Условие в исключающем шлюзе.'
+        description='Шлюзы с добавлением условия разветвления.'
     )
 
 
 def llm(text, temp): 
     llm = ChatOpenAI(
-        model="deepseek-chat",
+        model="gpt-4.1-nano",
         api_key=os.getenv('API_KEY'),
-        base_url="https://api.deepseek.com/v1",
         temperature=temp,
     )
+
+    with open(f'dataset.jsonl', 'r', encoding='utf-8') as f:
+        dataset = f.readlines()
+
+    context = f"INPUT:\n {text}\nПримеры:\n{''.join(dataset)}"    
+
     #1 этап
-    prompt_1 = get_prompt(1, text)
+    prompt_1 = get_prompt(1, context)
     first_stage = llm.with_structured_output(BPMN)
     bpmn = first_stage.invoke(prompt_1)
     elements_without_flows = bpmn.model_dump()
 
     #2 этап
-    prompt_2 = get_prompt(2, {'context': elements_without_flows})
+    data, ID = generate_ids_exept_flows(elements_without_flows)
+    context += '\nПолученные данные:\n' + json.dumps(data, ensure_ascii=False, indent=2)
+    print(data)
+    prompt_2 = get_prompt(2, context)
     second_stage = llm.with_structured_output(Flows)
-    ID, data = generate_ids_exept_flows(elements_without_flows)
     flows = second_stage.invoke(prompt_2)
-    data['flows'] = generate_flow_ids(ID, flows.model_dump())
+    data['flows'] = generate_flow_ids(ID, flows.model_dump()['flows'])
+
+    print(data['flows'])
 
     #3 этап
-    prompt_3 = get_prompt(3, {'context': data})
+    context += '\nПолученные переходы:\n' + json.dumps(data['flows'], ensure_ascii=False, indent=2)
+    prompt_3 = get_prompt(3, context)
     third_stage = llm.with_structured_output(Groovy)
     groovy = third_stage.invoke(prompt_3)
-    data['gateways'] = groovy.model_dump()
+    data['gateways'] = groovy.model_dump()['gateways']
 
     return data
 
@@ -85,11 +95,4 @@ def llm(text, temp):
 def get_prompt(stage, context):
     with open(f'prompts/prompt_{stage}.txt', 'r', encoding='utf-8') as f:
         prompt = f.read()
-    
-    with open(f'datasets/dataset_{stage}.jsonl', 'r', encoding='utf-8') as f:
-        dataset = f.readlines()
-
-    if type(context) == dict:
-        context = json.dumps(context, ensure_ascii=False, indent=2)
-
-    return prompt + f"\nПримеры: \n{''.join(dataset)}" + f"\nКонтекст: \n{context}"
+    return context + '\n' + prompt 

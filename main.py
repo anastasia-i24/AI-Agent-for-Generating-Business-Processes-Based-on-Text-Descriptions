@@ -1,4 +1,6 @@
 import os
+import json
+import zipfile
 from build_empty_xml import empty_builder
 from gpd import gpd
 from process_definition import process_definition_builder
@@ -17,6 +19,9 @@ def main():
     os.environ['API_KEY'] = input('Введите свой API ключ: ')
     temp = int(input('Введите температуру: '))
     data = llm(text, temp)
+
+    with open('data.json', 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
 
     #собираем xml файлы
     empty_builder("comments", "versions")
@@ -44,8 +49,6 @@ def main():
         print(f"\nSuccessfully created: {result}")
         for i in files_to_archive:
             os.remove(i)
-
-        import zipfile
 
         try:
             with zipfile.ZipFile(result, 'r') as zipf:
