@@ -1,39 +1,31 @@
 import os
-from gather_data import gather_data
 from build_empty_xml import empty_builder
 from gpd import gpd
 from process_definition import process_definition_builder
 from generate_par import create_zip_with_par_extension
 from variables import variables
-from generate_ids import generate_ids
-from llm import extract_bpmn
+from llm import llm
 
 def main():
     #собираем данные 
-    os.environ['DEEPSEEK_API_KEY'] = input('Введите свой API ключ: ')
-    print("Введите текст (для завершения введите пустую строку): ")
+    print("Введите описание бизнес-процесса (для завершения введите пустую строку): ")
     lines = []
     while (line := input()):
         line = input()
         lines.append(line)
-    prompt = "\n".join(lines)
+    text = "\n".join(lines)
+    os.environ['API_KEY'] = input('Введите свой API ключ: ')
+    temp = int(input('Введите температуру: '))
+    data = llm(text, temp)
 
-    with open('prompt.txt', 'a', encoding='utf-8') as f:
-        f.write(prompt + '\n')
-
-    data = extract_bpmn()
-
-    #получаем id
-    ids = generate_ids(data)
-    
     #собираем xml файлы
     empty_builder("comments", "versions")
     empty_builder("forms", "forms")
     empty_builder("variables", "variables")
     empty_builder("gpd", "process-diagram")
 
-    process_definition_builder(data, ids)
-    gpd("gpd.xml", data, ids)
+    process_definition_builder(data)
+    gpd("gpd.xml", data)
     variables('variables.xml', data)
 
     files_to_archive = [

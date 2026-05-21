@@ -1,7 +1,7 @@
 from lxml import etree as ET
 from beautiful_xml import indent
 
-def generate_bpmn_process(data, ids):
+def generate_bpmn_process(data):
     user_tasks = data['user_tasks']
     script_tasks = data['script_tasks']
     lanes = data['lanes']
@@ -31,14 +31,14 @@ def generate_bpmn_process(data, ids):
             lane_elem = ET.SubElement(
                 lane_set, 
                 'lane', 
-                {'id': f'ID{ids[lane["name"]]}', 'name': lane["name"]}
+                {'id': f'ID{lane['id']}', 'name': lane['name']}
             )
             lane_ext = ET.SubElement(lane_elem, 'extensionElements')
             ET.SubElement(lane_ext, f"{{{NS['runa']}}}property",
                           name='class', 
                           value='ru.runa.wfe.extension.assign.DefaultAssignmentHandler')
             config = ET.SubElement(lane_ext, f"{{{NS['runa']}}}property", name='config')
-            config.text = ET.CDATA(lane.get("editor", ""))
+            config.text = ET.CDATA("")
     else:
         ET.SubElement(process, 'laneSet')
 
@@ -47,7 +47,7 @@ def generate_bpmn_process(data, ids):
         gateway = ET.SubElement(
             process, 
             f"{gtw['type']}Gateway", 
-            {'id': f"ID{ids[gtw['name']]}", 'name': gtw['name']}
+            {'id': f"ID{gtw['id']}", 'name': gtw['name']}
         )
         if gtw.get('conditions'):
             gtw_ext = ET.SubElement(gateway, 'extensionElements')
@@ -59,24 +59,24 @@ def generate_bpmn_process(data, ids):
 
     # events
     for event in events:
-        if ids[event['name']] == "ID1":
+        if event['type'] == "start":
             evt = ET.SubElement(
                 process, 
                 'startEvent', 
-                {'id': f"ID{ids[event['name']]}", 'name': event['name']}
+                {'id': f"ID{event['id']}", 'name': event['name']}
             )
-            if event['lane'] != '0':
+            if event['lane']:
                 evt_ext = ET.SubElement(evt, 'extensionElements')
                 ET.SubElement(evt_ext, f"{{{NS['runa']}}}property", name='lane', value='true')
         else:
-            evt = ET.SubElement(process, 'endEvent', {'id': f"ID{ids[event['name']]}", 'name': event['name']})
+            evt = ET.SubElement(process, 'endEvent', {'id': f"ID{event['id']}", 'name': event['name']})
 
     # UserTasks
     for task in user_tasks:
         task_elem = ET.SubElement(
             process, 
             'userTask', 
-            {'id': f"ID{ids[task['name']]}", 'name': task['name']}
+            {'id': f"ID{task['id']}", 'name': task['name']}
         )
         task_ext = ET.SubElement(task_elem, 'extensionElements')
         ET.SubElement(task_ext, f"{{{NS['runa']}}}property", {'name': 'lane', 'value': task['lane']})
@@ -86,7 +86,7 @@ def generate_bpmn_process(data, ids):
         script_elem = ET.SubElement(
             process, 
             'scriptTask', 
-            {'id': f"ID{ids[script['name']]}", 'name': script['name']}
+            {'id': f"ID{script['id']}", 'name': script['name']}
         )
         script_ext = ET.SubElement(script_elem, 'extensionElements')
         ET.SubElement(
@@ -100,18 +100,18 @@ def generate_bpmn_process(data, ids):
     # sequenceFlow
     for flow in flows:
         ET.SubElement(process, 'sequenceFlow', {
-            'id': f"ID{ids[flow['name']]}",
+            'id': f"ID{flow['id']}",
             'name': flow['name'],
-            'sourceRef': f"ID{ids[flow['sourceRef']]}",
-            'targetRef': f"ID{ids[flow['targetRef']]}"
+            'sourceRef': f"ID{flow['sourceRef']}",
+            'targetRef': f"ID{flow['targetRef']}"
         })
 
     return root
 
 
-def process_definition_builder(data):
+def process_definition_builder(data, ids):
     filename = "processdefinition"
-    root = generate_bpmn_process(data)
+    root = generate_bpmn_process(data, ids)
     tree = ET.ElementTree(root)
     indent(root)
     xml_str = ET.tostring(tree.getroot(), encoding='unicode', method='xml')

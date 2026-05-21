@@ -1,0 +1,284 @@
+[
+    {
+        "input": {
+            "process_name": "Игра в камешки",
+            "user_tasks": [
+                {"id": 11, "name": "Сделать ход", "lane": "Преподаватель"},
+                {"id": 15, "name": "Сделать ход", "lane": "Студент"},
+                {"id": 69, "name": "Ознакомиться с результатами", "lane": "Преподаватель"},
+                {"id": 70, "name": "Ознакомиться с результатами", "lane": "Студент"}
+            ],
+            "script_tasks": [
+                {"id": 8, "name": "Задача сценария 1"},
+                {"id": 13, "name": "Задача сценария 2"},
+                {"id": 30, "name": "Задача сценария 3"},
+                {"id": 49, "name": "Задача сценария 3"},
+                {"id": 60, "name": "Задача сценария 5"},
+                {"id": 62, "name": "Задача сценария 5"},
+                {"id": 85, "name": "Задача сценария 2"},
+                {"id": 87, "name": "Задача сценария 2"},
+                {"id": 89, "name": "Задача сценария 9"}
+            ],
+            "lanes": [
+                {"id": 2, "name": "Студент"},
+                {"id": 3, "name": "Преподаватель"}
+            ],
+            "events": [
+                {"id": 1, "name": "Сделать первый ход", "lane": "Студент", "type": "start"},
+                {"id": 76, "name": "Окончание", "lane": "", "type": "end"}
+            ],
+            "variables": [
+                {"name": "Количество камней в куче", "format": "Long"},
+                {"name": "Взятое количество камней", "format": "Long"},
+                {"name": "Оставшееся количество камней", "format": "Long"},
+                {"name": "Начальное количество камней в куче", "format": "Long"},
+                {"name": "Половина оставшихся камней", "format": "Long"},
+                {"name": "Победитель", "format": "String"},
+                {"name": "Рекомендованное число", "format": "Text"}
+            ],
+            "gateways": [
+                {"id": 18, "name": "Исключающий шлюз 1", "type": "exclusive"},
+                {"id": 36, "name": "Исключающий шлюз 2", "type": "exclusive"},
+                {"id": 51, "name": "Исключающий шлюз 3", "type": "exclusive"},
+                {"id": 67, "name": "Параллельный шлюз 1", "type": "parallel"},
+                {"id": 71, "name": "Параллельный шлюз 2", "type": "parallel"}
+
+            ]
+        },
+        "output": [
+            {"name": "Переход1", "sourceRef": 3, "targetRef": 8},
+            {"name": "У студента остался 1 камень", "sourceRef": 18, "targetRef": 62},
+            {"name": "В куче > 1 камня", "sourceRef": 18, "targetRef": 11},
+            {"name": "У преподавателя остался 1 камень", "sourceRef": 36, "targetRef": 60},
+            {"name": "В куче > 1 камня", "sourceRef": 36, "targetRef": 89},
+            {"name": "Переход1", "sourceRef": 51, "targetRef": 67},
+            {"name": "Переход1", "sourceRef": 11, "targetRef": 30},
+            {"name": "Переход1", "sourceRef": 15, "targetRef": 49},
+            {"name": "Переход1", "sourceRef": 69, "targetRef": 71},
+            {"name": "Переход1", "sourceRef": 70, "targetRef": 71},
+            {"name": "Переход1", "sourceRef": 8, "targetRef": 13},
+            {"name": "Переход1", "sourceRef": 13, "targetRef": 11},
+            {"name": "Переход1", "sourceRef": 30, "targetRef": 85},
+            {"name": "Переход1", "sourceRef": 49, "targetRef": 87},
+            {"name": "Переход1", "sourceRef": 60, "targetRef": 51},
+            {"name": "Переход1", "sourceRef": 62, "targetRef": 51},
+            {"name": "Переход1", "sourceRef": 85, "targetRef": 36},
+            {"name": "Переход1", "sourceRef": 87, "targetRef": 18},
+            {"name": "Переход1", "sourceRef": 89, "targetRef": 15},
+            {"name": "Переход1", "sourceRef": 67, "targetRef": 70},
+            {"name": "Переход2", "sourceRef": 67, "targetRef": 69},
+            {"name": "Переход1", "sourceRef": 71, "targetRef": 76}
+        ]
+    },
+    {
+        "input": {
+            "process_name": "Ежегодный отпуск",
+            "user_tasks": [
+                {"id": 3, "name": "Рассмотреть заявку на отпуск", "lane": "Руководитель"},
+                {"id": 13, "name": "Ознакомиться с решением руководителя", "lane": "Сотрудник"},
+                {"id": 16, "name": "Проверить соблюдение технологий и законов", "lane": "Инспектор кадровой службы"},
+                {"id": 24, "name": "Ознакомиться с подтверждением ежегодного отпуска", "lane": "Сотрудник"},
+                {"id": 36, "name": "Ознакомиться с отрицательным решением инспектора", "lane": "Сотрудник"},
+                {"id": 37, "name": "Ознакомиться с отрицательным решением инспектора", "lane": "Руководитель"},
+                {"id": 58, "name": "Сдать в КС заявление и подписать приказ", "lane": "Сотрудник"},
+                {"id": 59, "name": "Получить заявление и подпись на приказе", "lane": "Инспектор кадровой службы"},
+                {"id": 65, "name": "Выплатить отпускные", "lane": "Бухгалтер"},
+                {"id": 79, "name": "Сгенерировать приказ на ежегодный отпуск", "lane": "Word бот"},
+                {"id": 84, "name": "Ввести номер приказа на отпуск", "lane": "Инспектор кадровой службы"},
+                {"id": 88, "name": "Сгенерировать заявление на ежегодный отпуск", "lane": "Word бот"}
+            ],
+            "script_tasks": [
+                {"id": 80, "name": "Получить ФИО руководителя"},
+                {"id": 81, "name": "Получить текст приказа"},
+                {"id": 83, "name": "Получить текущую дату"},
+                {"id": 85, "name": "Получить ФИО Сотрудника"},
+                {"id": 86, "name": "Получить ФИО Руководителя в дательном падеже"},
+                {"id": 87, "name": "Получить ФИО Сотрудника в нужном падеже"}
+            ],
+            "lanes": [
+                {"id": 2, "name": "Сотрудник"},
+                {"id": 5, "name": "Руководитель"},
+                {"id": 15, "name": "Инспектор кадровой службы"},
+                {"id": 66, "name": "Бухгалтер"},
+                {"id": 69, "name": "Word бот"}
+            ],
+            "events": [
+                {"id": 1, "name": "Подать заявку на отпуск", "lane": "Сотрудник", "type": "start"},
+                {"id": 110, "name": "Окончание 1", "lane": "", "type": "end"},
+                {"id": 114, "name": "Окончание 2", "lane": "", "type": "end"},
+                {"id": 117, "name": "Окончание 3", "lane": "", "type": "end"},
+                {"id": 118, "name": "Окончание 4", "lane": "", "type": "end"},
+                {"id": 119, "name": "Окончание 5", "lane": "", "type": "end"},
+                {"id": 120, "name": "Окончание 6", "lane": "", "type": "end"},
+                {"id": 122, "name": "Окончание 7", "lane": "", "type": "end"}
+            ],
+            "variables": [
+                {"name": "Дата начала отпуска", "format": "Date"},
+                {"name": "Дата окончания отпуска", "format": "Date"},
+                {"name": "Причина", "format": "String"},
+                {"name": "Комментарий", "format": "Text"},
+                {"name": "Комментарий руководителя", "format": "Text"},
+                {"name": "Отпуск по договору", "format": "Boolean"},
+                {"name": "Непотраченные дни", "format": "Boolean"},
+                {"name": "Номер приказа", "format": "Long"},
+                {"name": "Дата", "format": "Date"},
+                {"name": "ФИО Сотрудника 3", "format": "String"},
+                {"name": "Текст приказа", "format": "String"},
+                {"name": "Приказ", "format": "File"},
+                {"name": "Заявление", "format": "File"},
+                {"name": "ФИО Руководителя 3", "format": "String"},
+                {"name": "ФИО Сотрудника", "format": "String"},
+                {"name": "ФИО Руководителя", "format": "String"},
+                {"name": "Решение руководителя", "format": "Boolean"}
+            ],
+            "gateways": [
+                {"id": 11, "name": "Параллельный шлюз 1", "type": "parallel"},
+                {"id": 26, "name": "Параллельный шлюз 2", "type": "parallel"},
+                {"id": 46, "name": "Параллельный шлюз 3", "type": "parallel"},
+                {"id": 98, "name": "Параллельный шлюз 4", "type": "parallel"},
+                {"id": 21, "name": "Исключающий шлюз 1", "type": "exclusive"},
+                {"id": 113, "name": "Исключающий шлюз 3", "type": "exclusive"}
+            ]
+        },
+        "output": [
+            {"name": "Переход1", "sourceRef": 1, "targetRef": 3},
+            {"name": "Законы не соблюдены", "sourceRef": 21, "targetRef": 26},
+            {"name": "Законы соблюдены", "sourceRef": 21, "targetRef": 46},
+            {"name": "Решение руководителя отрицательно", "sourceRef": 113, "targetRef": 114},
+            {"name": "Решение руководителя положительно", "sourceRef": 113, "targetRef": 16},
+            {"name": "Одобрить", "sourceRef": 3, "targetRef": 11},
+            {"name": "Переход1", "sourceRef": 13, "targetRef": 110},
+            {"name": "Переход1", "sourceRef": 16, "targetRef": 21},
+            {"name": "Переход1", "sourceRef": 24, "targetRef": 118},
+            {"name": "Переход1", "sourceRef": 36, "targetRef": 117},
+            {"name": "Переход1", "sourceRef": 37, "targetRef": 122},
+            {"name": "Переход1", "sourceRef": 58, "targetRef": 119},
+            {"name": "Переход1", "sourceRef": 59, "targetRef": 65},
+            {"name": "Переход1", "sourceRef": 65, "targetRef": 120},
+            {"name": "Переход1", "sourceRef": 79, "targetRef": 80},
+            {"name": "Переход1", "sourceRef": 84, "targetRef": 83},
+            {"name": "Переход1", "sourceRef": 88, "targetRef": 98},
+            {"name": "Переход1", "sourceRef": 80, "targetRef": 86},
+            {"name": "Переход1", "sourceRef": 81, "targetRef": 79},
+            {"name": "Переход1", "sourceRef": 83, "targetRef": 85},
+            {"name": "Переход1", "sourceRef": 85, "targetRef": 87},
+            {"name": "Переход1", "sourceRef": 86, "targetRef": 88},
+            {"name": "Переход1", "sourceRef": 87, "targetRef": 81},
+            {"name": "Переход1", "sourceRef": 11, "targetRef": 13},
+            {"name": "Переход2", "sourceRef": 11, "targetRef": 113},
+            {"name": "Переход1", "sourceRef": 26, "targetRef": 36},
+            {"name": "Переход2", "sourceRef": 26, "targetRef": 37},
+            {"name": "Переход1", "sourceRef": 46, "targetRef": 24},
+            {"name": "Переход2", "sourceRef": 46, "targetRef": 84},
+            {"name": "Переход1", "sourceRef": 98, "targetRef": 58},
+            {"name": "Переход2", "sourceRef": 98, "targetRef": 59}    
+        ]
+    },
+    {
+        "input": {
+            "process_name": "Ежегодный отпуск",
+            "user_tasks": [
+                {"id": 3, "name": "Рассмотреть заявку на отпуск", "lane": "Руководитель"},
+                {"id": 6, "name": "Ознакомиться с отрицательным решением руководства", "lane": "Сотрудник"},
+                {"id": 13, "name": "Ознакомиться с положительным решением руководства", "lane": "Сотрудник"},
+                {"id": 16, "name": "Проверить соблюдение технологий и законов", "lane": "Инспектор кадровой службы"},
+                {"id": 24, "name": "Ознакомиться с подтверждением ежегодного отпуска", "lane": "Сотрудник"},
+                {"id": 36, "name": "Ознакомиться с отрицательным решением инспектора", "lane": "Сотрудник"},
+                {"id": 37, "name": "Ознакомиться с отрицательным решением инспектора", "lane": "Руководитель"},
+                {"id": 58, "name": "Сдать в КС заявление и подписать приказ", "lane": "Сотрудник"},
+                {"id": 59, "name": "Получить заявление и подпись на приказе", "lane": "Инспектор кадровой службы"},
+                {"id": 65, "name": "Выплатить отпускные", "lane": "Бухгалтер"},
+                {"id": 79, "name": "Сгенерировать приказ на ежегодный отпуск", "lane": "Word бот"},
+                {"id": 84, "name": "Ввести номер приказа на отпуск", "lane": "Инспектор кадровой службы"},
+                {"id": 88, "name": "Сгенерировать заявление на ежегодный отпуск", "lane": "Word бот"}
+            ],
+            "script_tasks": [
+                {"id": 80, "name": "Получить ФИО руководителя"},
+                {"id": 81, "name": "Получить текст приказа"},
+                {"id": 83, "name": "Получить текущую дату"},
+                {"id": 85, "name": "Получить ФИО Сотрудника"},
+                {"id": 86, "name": "Получить ФИО Руководителя в дательном падеже"},
+                {"id": 87, "name": "Получить ФИО Сотрудника в нужном падеже"}
+            ],
+            "lanes": [
+                {"id": 2, "name": "Сотрудник"},
+                {"id": 5, "name": "Руководитель"},
+                {"id": 15, "name": "Инспектор кадровой службы"},
+                {"id": 66, "name": "Бухгалтер"},
+                {"id": 69, "name": "Word бот"}
+            ],
+            "events": [
+                {"id": 1, "name": "Подать заявку на отпуск", "lane": "Сотрудник", "type": "start"},
+                {"id": 9, "name": "Окончание", "lane": "", "type": "end"}
+            ],
+            "variables": [
+                {"name": "Дата начала отпуска", "format": "Date"},
+                {"name": "Дата окончания отпуска", "format": "Date"},
+                {"name": "Причина", "format": "String"},
+                {"name": "Комментарий", "format": "Text"},
+                {"name": "Комментарий руководителя", "format": "Text"},
+                {"name": "Отпуск по договору", "format": "Boolean"},
+                {"name": "Непотраченные дни", "format": "Boolean"},
+                {"name": "Номер приказа", "format": "Long"},
+                {"name": "Дата", "format": "Date"},
+                {"name": "ФИО Сотрудника 3", "format": "String"},
+                {"name": "Текст приказа", "format": "String"},
+                {"name": "Приказ", "format": "File"},
+                {"name": "Заявление", "format": "File"},
+                {"name": "ФИО Руководителя 3", "format": "String"},
+                {"name": "ФИО Сотрудника", "format": "String"},
+                {"name": "ФИО Руководителя", "format": "String"}
+            ],
+            "gateways": [
+                {"id": 11, "name": "Параллельный шлюз 1", "type": "parallel"},
+                {"id": 25, "name": "Параллельный шлюз 2", "type": "parallel"},
+                {"id": 26, "name": "Параллельный шлюз 3", "type": "parallel"},
+                {"id": 40, "name": "Параллельный шлюз 4", "type": "parallel"},
+                {"id": 46, "name": "Параллельный шлюз 5", "type": "parallel"},
+                {"id": 57, "name": "Параллельный шлюз 6", "type": "parallel"},
+                {"id": 98, "name": "Параллельный шлюз 7", "type": "parallel"},
+                {"id": 102, "name": "Параллельный шлюз 8", "type": "parallel"},
+                {"id": 21, "name": "Исключающий шлюз 1", "type": "exclusive"},
+                {"id": 75, "name": "Исключающий шлюз 2", "type": "exclusive"}
+            ]
+        },
+        "output": [
+            {"name": "Переход1", "sourceRef": 1, "targetRef": 3},
+            {"name": "Законы не соблюдены", "sourceRef": 21, "targetRef": 26},
+            {"name": "Законы соблюдены", "sourceRef": 21, "targetRef": 46},
+            {"name": "Переход1", "sourceRef": 75, "targetRef": 25},
+            {"name": "Отказать", "sourceRef": 3, "targetRef": 6},
+            {"name": "Одобрить", "sourceRef": 3, "targetRef": 11},
+            {"name": "Переход1", "sourceRef": 6, "targetRef": 9},
+            {"name": "Переход1", "sourceRef": 13, "targetRef": 25},
+            {"name": "Переход1", "sourceRef": 16, "targetRef": 21},
+            {"name": "Переход1", "sourceRef": 24, "targetRef": 102},
+            {"name": "Переход1", "sourceRef": 36, "targetRef": 40},
+            {"name": "Переход1", "sourceRef": 37, "targetRef": 40},
+            {"name": "Переход1", "sourceRef": 58, "targetRef": 57},
+            {"name": "Переход1", "sourceRef": 59, "targetRef": 65},
+            {"name": "Переход1", "sourceRef": 65, "targetRef": 57},
+            {"name": "Переход1", "sourceRef": 79, "targetRef": 80},
+            {"name": "Переход1", "sourceRef": 84, "targetRef": 83},
+            {"name": "Переход1", "sourceRef": 88, "targetRef": 98},
+            {"name": "Переход1", "sourceRef": 80, "targetRef": 86},
+            {"name": "Переход1", "sourceRef": 81, "targetRef": 79},
+            {"name": "Переход1", "sourceRef": 83, "targetRef": 85},
+            {"name": "Переход1", "sourceRef": 85, "targetRef": 87},
+            {"name": "Переход1", "sourceRef": 86, "targetRef": 88},
+            {"name": "Переход1", "sourceRef": 87, "targetRef": 81},
+            {"name": "Переход1", "sourceRef": 11, "targetRef": 13},
+            {"name": "Переход2", "sourceRef": 11, "targetRef": 16},
+            {"name": "Переход1", "sourceRef": 25, "targetRef": 9},
+            {"name": "Переход1", "sourceRef": 26, "targetRef": 36},
+            {"name": "Переход2", "sourceRef": 26, "targetRef": 37},
+            {"name": "Переход1", "sourceRef": 40, "targetRef": 75},
+            {"name": "Переход1", "sourceRef": 46, "targetRef": 24},
+            {"name": "Переход2", "sourceRef": 46, "targetRef": 84},
+            {"name": "Переход1", "sourceRef": 57, "targetRef": 102},
+            {"name": "Переход1", "sourceRef": 98, "targetRef": 58},
+            {"name": "Переход2", "sourceRef": 98, "targetRef": 59},
+            {"name": "Переход1", "sourceRef": 102, "targetRef": 75}
+        ]
+    }
+]
