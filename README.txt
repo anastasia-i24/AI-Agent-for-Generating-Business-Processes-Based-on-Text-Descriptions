@@ -3,6 +3,8 @@
 Установка зависимостей:
 pip install -r requirements.txt
 
+либо pip install openai pydantic python-dotenv langchain
+
 Для запуска программы:
 python main.py
 
