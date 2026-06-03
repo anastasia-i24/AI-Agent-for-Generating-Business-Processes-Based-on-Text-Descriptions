@@ -19,13 +19,13 @@ BPMN Generator — это инструмент на основе больших 
 
 
 ## Начало работы
-[![Windows](https://img.shields.io/badge/Windows-Download-blue?style=for-the-badge&logo=windows)](https://github.com/anastasia-i24/AI-Agent-for-Generating-Business-Processes-Based-on-Text-Descriptions/releases/latest/download/BPMNGenerator_windows.zip)\
-[![macOS](https://img.shields.io/badge/macOS-Download-lightblue?style=for-the-badge&logo=apple)](https://github.com/anastasia-i24/AI-Agent-for-Generating-Business-Processes-Based-on-Text-Descriptions/releases/latest/download/BPMNGenerator_mac.zip)
+[![Windows](https://img.shields.io/badge/Windows-Download-blue?style=for-the-badge&logo=windows)](https://github.com/anastasia-i24/AI-Agent-for-Generating-Business-Processes-Based-on-Text-Descriptions/releases/latest/download/BPMNGenerator.exe)\
+[![macOS](https://img.shields.io/badge/macOS-Download-lightblue?style=for-the-badge&logo=apple)](https://github.com/anastasia-i24/AI-Agent-for-Generating-Business-Processes-Based-on-Text-Descriptions/releases/latest/download/BPMNGenerator.zip)
 
 ## Использование
 Для работы с программой Вам понадобится [OpenAI API](https://github.com/dan1471/FREE-openai-api-keys) ключ
 
-1. Введите текстовое описание юизнес-процесса. Чем подробнее описание - тем лучше
+1. Введите текстовое описание бизнес-процесса. Чем подробнее описание - тем лучше
 2. Введите свой OpenAI API ключ
 3. Введите значение температуры (по умолчанию значение 0 для воспроизводимых результатов)
 4. Программа выдаст результат - архив result.par
