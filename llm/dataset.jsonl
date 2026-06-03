@@ -1,0 +1,92 @@
+[   
+    {
+        "process_name": "Согласование командировки",
+        "user_tasks": [
+            {"id": 2, "name": "Подать заявку", "lane": "Сотрудник"},
+            {"id": 3, "name": "Рассмотреть заявку", "lane": "Руководитель"},
+            {"id": 5, "name": "Выплатить аванс", "lane": "Бухгалтерия"}
+        ],
+        "script_tasks": [
+            {"id": 6, "name": "Уведомить об отказе"}
+        ],
+        "lanes": [
+            {"name": "Сотрудник"},
+            {"name": "Руководитель"},
+            {"name": "Бухгалтерия"}
+        ],
+        "events": [
+            {"id": 1, "name": "Начало", "lane": "Сотрудник", "type": "start"},
+            {"id": 7, "name": "Успешное завершение", "lane": "", "type": "end"},
+            {"id": 8, "name": "Отказ", "lane": "", "type": "end"}
+        ],
+        "variables": [
+            {"name": "Решение руководителя", "format": "Boolean"}
+        ],
+        "gateways": [
+            {"id": 4, "name": "Решение руководителя", "type": "exclusive", "conditions": "if (Решение_руководителя == true) return 'одобрено';\nreturn 'отказано';"}
+        ],
+        "flows_names": [
+            {"name": "Переход1", "sourceRef": 1, "targetRef": 2},
+            {"name": "Переход2", "sourceRef": 2, "targetRef": 3},
+            {"name": "Переход3", "sourceRef": 3, "targetRef": 4},
+            {"name": "одобрено", "sourceRef": 4, "targetRef": 5},
+            {"name": "отказано", "sourceRef": 4, "targetRef": 6},
+            {"name": "Переход4", "sourceRef": 5, "targetRef": 7},
+            {"name": "Переход5", "sourceRef": 6, "targetRef": 8}
+        ]
+    },
+    {
+        "process_name": "Регистрация нового сотрудника",
+        "user_tasks": [
+            {"id": 2, "name": "Ввести данные сотрудника", "lane": "HR"}
+        ],
+        "script_tasks": [
+            {"id": 3, "name": "Создать учётную запись"},
+            {"id": 4, "name": "Сгенерировать пароль"},
+            {"id": 5, "name": "Отправить письмо"}
+        ],
+        "lanes": [
+            {"name": "HR"}
+        ],
+        "events": [
+            {"id": 1, "name": "Начало регистрации", "lane": "HR", "type": "start"},
+            {"id": 6, "name": "Регистрация завершена", "lane": "", "type": "end"}
+        ],
+        "variables": [
+            {"name": "Данные сотрудника", "format": "Text"},
+            {"name": "Пароль", "format": "String"}
+        ],
+        "gateways": [],
+        "flows_names": [
+            {"name": "Переход1", "sourceRef": 1, "targetRef": 2},
+            {"name": "Переход2", "sourceRef": 2, "targetRef": 3},
+            {"name": "Переход3", "sourceRef": 3, "targetRef": 4},
+            {"name": "Переход4", "sourceRef": 4, "targetRef": 5}
+        ]
+    },
+    {
+        "process_name": "Заказ канцелярии",
+        "user_tasks": [
+            {"id": 2, "name": "Подать заявку", "lane": "Сотрудник"},
+            {"id": 3, "name": "Утвердить заявку", "lane": "Руководитель"},
+            {"id": 4, "name": "Сформировать заказ", "lane": "Отдел снабжения"}
+        ],
+        "script_tasks": [],
+        "lanes": [
+            {"name": "Сотрудник"},
+            {"name": "Руководитель"},
+            {"name": "Отдел снабжения"}
+        ],
+        "events": [
+                {"id": 1, "name": "Начало процесса", "lane": "Сотрудник", "type": "start"},
+                {"id": 5, "name": "Заказ сформирован", "lane": "", "type": "end"}
+        ],
+        "variables": [],
+        "gateways": [],
+        "flows_names": [
+            {"name": "Переход1", "sourceRef": 1, "targetRef": 2},
+            {"name": "Переход2", "sourceRef": 2, "targetRef": 3},
+            {"name": "Переход3", "sourceRef": 3, "targetRef": 4}
+        ]
+    }
+]

@@ -1,0 +1,3 @@
+([('BPMNGenerator',
+   '/Users/evgenia/runawfe/AI-Agent-for-Generating-Business-Processes-Based-on-Text-Descriptions/dist/BPMNGenerator',
+   'EXECUTABLE')],)
