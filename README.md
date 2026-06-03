@@ -18,7 +18,11 @@ BPMN Generator — это инструмент на основе больших 
 
 ## Начало работы
 [![Windows](https://img.shields.io/badge/Windows-Download-blue?style=for-the-badge&logo=windows)](https://github.com/anastasia-i24/AI-Agent-for-Generating-Business-Processes-Based-on-Text-Descriptions/releases/latest/download/BPMNGenerator.exe)\
-[![macOS](https://img.shields.io/badge/macOS-Download-lightblue?style=for-the-badge&logo=apple)](https://github.com/anastasia-i24/AI-Agent-for-Generating-Business-Processes-Based-on-Text-Descriptions/releases/latest/download/BPMNGenerator.zip)
+[![macOS](https://img.shields.io/badge/macOS-Download-lightblue?style=for-the-badge&logo=apple)](https://github.com/anastasia-i24/AI-Agent-for-Generating-Business-Processes-Based-on-Text-Descriptions/releases/latest/download/BPMNGenerator.zip)\
+Внимание! Если программа не открывается на macOS, введите в терминале 
+```sh
+   xattr -dr com.apple.quarantine /путь_к_программе/BPMNGenerator.app
+```
 
 ## Использование
 Для работы с программой Вам понадобится [OpenAI API](https://github.com/dan1471/FREE-openai-api-keys) ключ
