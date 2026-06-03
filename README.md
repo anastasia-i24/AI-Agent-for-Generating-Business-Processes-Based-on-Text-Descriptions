@@ -21,7 +21,7 @@ BPMN Generator — это инструмент на основе больших 
 [![macOS](https://img.shields.io/badge/macOS-Download-lightblue?style=for-the-badge&logo=apple)](https://github.com/anastasia-i24/AI-Agent-for-Generating-Business-Processes-Based-on-Text-Descriptions/releases/latest/download/BPMNGenerator.zip)\
 Внимание! Если программа не открывается на macOS, введите в терминале 
 ```sh
-   xattr -dr com.apple.quarantine /путь_к_программе/BPMNGenerator.app
+   xattr -dr com.apple.quarantine/путь_к_программе/BPMNGenerator.app
 ```
 
 ## Использование
